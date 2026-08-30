@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: perler-bead-app
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn server:app
