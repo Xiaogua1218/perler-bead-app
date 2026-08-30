@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#FFF5F0">
+<title>🍉 小瓜的拼豆施工图</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="app">
+  <!-- 导航栏 -->
+  <nav class="nav-bar" id="navBar">
+    <button class="nav-back" id="navBack" onclick="App.goBack()">←</button>
+    <span class="nav-title" id="navTitle">🍉 小瓜的拼豆施工图</span>
+    <button class="nav-action" id="navHistory" onclick="App.showHistory()">📋</button>
+  </nav>
+
+  <!-- ========== ① 首页 ========== -->
+  <div class="screen active" id="screen-home">
+    <div class="home-hero">
+      <div class="hero-illustration">
+        <div class="hero-bead bead-1"></div>
+        <div class="hero-bead bead-2"></div>
+        <div class="hero-bead bead-3"></div>
+        <div class="hero-bead bead-4"></div>
+        <div class="hero-bead bead-5"></div>
+        <div class="hero-bear">🍉</div>
+      </div>
+      <h1 class="hero-title">小瓜的拼豆施工图</h1>
+      <p class="hero-subtitle">把任何照片变成可爱的拼豆施工图</p>
+    </div>
+    <div class="home-features">
+      <div class="feature-card">
+        <span class="feature-icon">📷</span>
+        <span class="feature-label">拍照/选图</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🎨</span>
+        <span class="feature-label">221色匹配</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📐</span>
+        <span class="feature-label">施工图输出</span>
+      </div>
+    </div>
+    <button class="btn-primary btn-large" onclick="App.goTo('upload')">
+      📷 开始创作
+    </button>
+    <p class="home-hint">支持 JPG / PNG / WEBP 格式</p>
+  </div>
+
+  <!-- ========== ② 选图页 ========== -->
+  <div class="screen" id="screen-upload">
+    <div class="upload-area" id="uploadArea">
+      <div class="upload-placeholder" id="uploadPlaceholder">
+        <span class="upload-icon">🖼️</span>
+        <p>点击选择图片或拍照</p>
+        <p class="upload-hint">支持 JPG / PNG / WEBP</p>
+      </div>
+      <img class="upload-preview" id="uploadPreview" style="display:none" alt="预览">
+      <input type="file" id="fileInput" accept="image/*" capture="environment" onchange="App.handleFileSelect(event)" hidden>
+    </div>
+    <div class="upload-actions">
+      <button class="btn-secondary" onclick="document.getElementById('fileInput').click()">
+        🖼️ 从相册选择
+      </button>
+      <button class="btn-secondary" onclick="App.capturePhoto()">
+        📸 拍照
+      </button>
+    </div>
+    <button class="btn-primary btn-full" id="btnNextConfig" disabled onclick="App.goTo('config')">
+      下一步：参数设置 →
+    </button>
+  </div>
+
+  <!-- ========== ③ 参数配置页 ========== -->
+  <div class="screen" id="screen-config">
+    <!-- 实时预览区 -->
+    <div class="config-preview">
+      <h3 class="config-title">👁️ 实时预览</h3>
+      <div class="preview-canvas-wrap">
+        <canvas id="previewCanvas"></canvas>
+      </div>
+      <div class="preview-info">
+        <span id="previewGridInfo">50×50 · 2,500 颗</span>
+      </div>
+    </div>
+
+    <div class="config-section">
+      <h3 class="config-title">📐 网格尺寸</h3>
+      <div class="slider-container">
+        <input type="range" class="slider" id="gridSlider" min="10" max="120" value="50" step="5"
+               oninput="App.updateSlider()">
+        <div class="slider-labels">
+          <span>10</span><span>30</span><span>50</span><span>70</span><span>90</span><span>120</span>
+        </div>
+      </div>
+      <div class="grid-size-display">
+        <span class="grid-size-value" id="gridSizeValue">50 × 50</span>
+        <span class="grid-size-beads" id="gridBeadCount">2,500 颗</span>
+      </div>
+      <div class="grid-presets">
+        <button class="preset-btn" onclick="App.setGridSize(40)">40×40<br><small>1,600颗</small></button>
+        <button class="preset-btn active" onclick="App.setGridSize(50)" id="preset50">50×50<br><small>2,500颗</small></button>
+        <button class="preset-btn" onclick="App.setGridSize(60)" id="preset60">60×60<br><small>3,600颗</small></button>
+        <button class="preset-btn" onclick="App.setGridSize(80)" id="preset80">80×80<br><small>6,400颗</small></button>
+        <button class="preset-btn" onclick="App.setGridSize(100)" id="preset100">100×100<br><small>10,000颗</small></button>
+      </div>
+    </div>
+
+    <div class="config-section">
+      <h3 class="config-title">✨ 背景处理</h3>
+      <label class="toggle-row">
+        <span class="toggle-label">
+          <span>智能抠底</span>
+          <small>自动去除白色背景</small>
+        </span>
+        <input type="checkbox" class="toggle" id="bgRemove" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="config-section">
+      <h3 class="config-title">🎨 颜色方案</h3>
+      <div class="radio-group">
+        <label class="radio-row">
+          <input type="radio" name="colorMode" value="auto" checked onchange="App.updatePreview()">
+          <span class="radio-label">
+            <span>自动检测</span>
+            <small>根据图片智能选择颜色</small>
+          </span>
+        </label>
+        <label class="radio-row">
+          <input type="radio" name="colorMode" value="full" onchange="App.updatePreview()">
+          <span class="radio-label">
+            <span>全色卡 (221色)</span>
+            <small>最高还原度，速度较慢</small>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <button class="btn-primary btn-full" onclick="App.startGenerate()">
+      🪄 开始生成施工图
+    </button>
+  </div>
+
+  <!-- ========== ④ 生成中 ========== -->
+  <div class="screen" id="screen-generating">
+    <div class="generating-content">
+      <div class="generating-animation">
+        <span class="gen-dot dot-1">🟡</span>
+        <span class="gen-dot dot-2">🟠</span>
+        <span class="gen-dot dot-3">🔴</span>
+        <span class="gen-dot dot-4">🟣</span>
+        <span class="gen-dot dot-5">🔵</span>
+        <span class="gen-dot dot-6">🟢</span>
+      </div>
+      <h3 class="gen-status" id="genStatus">正在分析图片...</h3>
+      <div class="gen-progress">
+        <div class="gen-progress-bar" id="genProgressBar"></div>
+      </div>
+      <p class="gen-step" id="genStep">像素化处理中</p>
+    </div>
+  </div>
+
+  <!-- ========== ⑤ 结果页 ========== -->
+  <div class="screen" id="screen-result">
+    <div class="result-image-wrap" id="resultImageWrap">
+      <img class="result-image" id="resultImage" alt="施工图">
+    </div>
+    <div class="result-stats">
+      <div class="stat-item">
+        <span class="stat-value" id="statBeads">0</span>
+        <span class="stat-label">总豆数</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value" id="statColors">0</span>
+        <span class="stat-label">颜色数</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value" id="statGrid">0×0</span>
+        <span class="stat-label">网格尺寸</span>
+      </div>
+    </div>
+    <div class="result-legend" id="resultLegend">
+      <h4>🎨 色卡图例</h4>
+      <div class="legend-grid" id="legendGrid"></div>
+    </div>
+    <div class="result-actions">
+      <button class="btn-primary" onclick="App.downloadResult()">💾 保存图片</button>
+      <button class="btn-secondary" onclick="App.shareResult()">📤 分享</button>
+      <button class="btn-outline" onclick="App.goTo('config')">🔄 重新生成</button>
+    </div>
+  </div>
+
+  <!-- ========== 历史记录面板 ========== -->
+  <div class="overlay" id="historyOverlay" onclick="App.hideHistory()">
+    <div class="history-panel" onclick="event.stopPropagation()">
+      <div class="history-header">
+        <h3>📋 我的作品</h3>
+        <button class="btn-text" onclick="App.clearHistory()" id="btnClearHistory">清空</button>
+      </div>
+      <div class="history-list" id="historyList">
+        <div class="history-empty">还没有作品，快去创作吧 🍉</div>
+      </div>
+      <button class="btn-outline btn-full" onclick="App.hideHistory()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
