@@ -14,6 +14,10 @@
 
 
 
+
+
+
+
 <div id="app">
   <!-- 导航栏 -->
   <nav class="nav-bar" id="navBar">
@@ -21,6 +25,10 @@
     <span class="nav-title" id="navTitle">🍉 小瓜的拼豆施工图</span>
     <button class="nav-action" id="navHistory" onclick="App.showHistory()">📋</button>
   </nav>
+
+
+
+
 
 
 
@@ -62,6 +70,10 @@
 
 
 
+
+
+
+
   <!-- ========== ② 选图页 ========== -->
   <div class="screen" id="screen-upload">
     <div class="upload-area" id="uploadArea">
@@ -89,6 +101,10 @@
 
 
 
+
+
+
+
   <!-- ========== ③ 参数配置页 ========== -->
   <div class="screen" id="screen-config">
     <!-- 实时预览区 -->
@@ -101,6 +117,10 @@
         <span id="previewGridInfo">50×50 · 2,500 颗</span>
       </div>
     </div>
+
+
+
+
 
 
 
@@ -130,6 +150,10 @@
 
 
 
+
+
+
+
     <div class="config-section">
       <h3 class="config-title">✨ 背景处理</h3>
       <label class="toggle-row">
@@ -137,10 +161,14 @@
           <span>智能抠底</span>
           <small>自动去除白色背景</small>
         </span>
-        <input type="checkbox" class="toggle" id="bgRemove" checked>
+        <input type="checkbox" class="toggle" id="bgRemove" checked onchange="App.updatePreview()">
         <span class="toggle-slider"></span>
       </label>
     </div>
+
+
+
+
 
 
 
@@ -163,10 +191,18 @@
 
 
 
+
+
+
+
     <button class="btn-primary btn-full" onclick="App.startGenerate()">
       🪄 开始生成施工图
     </button>
   </div>
+
+
+
+
 
 
 
@@ -189,6 +225,10 @@
       <p class="gen-step" id="genStep">像素化处理中</p>
     </div>
   </div>
+
+
+
+
 
 
 
@@ -226,6 +266,10 @@
 
 
 
+
+
+
+
   <!-- ========== 历史记录面板 ========== -->
   <div class="overlay" id="historyOverlay" onclick="App.hideHistory()">
     <div class="history-panel" onclick="event.stopPropagation()">
@@ -240,6 +284,10 @@
     </div>
   </div>
 </div>
+
+
+
+
 
 
 
